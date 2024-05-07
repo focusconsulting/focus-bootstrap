@@ -1,0 +1,4 @@
+---
+plugin: openapi
+specFile: photo-analysis/openapi.yaml
+path: "/photo"

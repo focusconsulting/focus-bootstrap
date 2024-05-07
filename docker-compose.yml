@@ -1,0 +1,31 @@
+services:
+  mock-external-apis:
+    image: outofcoffee/imposter-all:latest
+    ports:
+      - 8080:8080
+    volumes:
+      - ./infrastructure/mocks/imposter:/opt/imposter/config
+  db:
+    image: postgres:16
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: opr
+      POSTGRES_PASSWORD: secret123
+      POSTGRES_USER: opr
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  api:
+    build:
+      context: ./api
+      target: dev
+    ports:
+      - 8000:8000
+    environment:
+      POSTGRES_CONNECTION_STRING: 'postgresql+psycopg2://opr:secret123@db:5432/opr'
+    depends_on:
+      - mock-external-apis
+      - db
+
+volumes:
+  pgdata:

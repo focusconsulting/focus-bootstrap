@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: OPR API
+  description: An API for managing passport renewals
+  version: 0.1.0
+
+servers:
+  - url: /v1
+
+paths:
+  /health:
+    get:
+      summary: Health Check for the OPR API
+      operationId: opr_api.handlers.health
+      responses:
+        "200":
+          description: API is available
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - timestamp
+                  - apiName
+                  - apiVersion
+                properties:
+                  status:
+                    type: string
+                    example: up
+                    nullable: false
+                  timestamp:
+                    type: string
+                    format: date-time
+                    nullable: false
+                    example: "2023-06-26T01:02:03.967736+00:00"
+                  apiName:
+                    type: string
+                    nullable: false
+                    example: opr-api
+                  apiVersion:
+                    type: string
+                    nullable: false
+                    example: v1
+  /health/deep:
+    get:
+      summary: More extensive health check for the OPR API
+      operationId: opr_api.handlers.health_deep
+      responses:
+        "200":
+          description: Validates that the API is available and connected to the database
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - timestamp
+                  - apiName
+                  - apiVersion
+                  - components
+                properties:
+                  status:
+                    type: string
+                    example: up
+                    nullable: false
+                  timestamp:
+                    type: string
+                    format: date-time
+                    nullable: false
+                    example: "2023-06-26T01:02:03.967736+00:00"
+                  apiName:
+                    type: string
+                    nullable: false
+                    example: opr-api
+                  apiVersion:
+                    type: string
+                    nullable: false
+                    example: v1
+                  components:
+                    type: object
+                    properties:
+                      db:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: up
