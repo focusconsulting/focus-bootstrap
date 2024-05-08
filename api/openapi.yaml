@@ -10,9 +10,91 @@ servers:
   - url: /v1
 
 tags:
+  - name: Addresses
+  - name: Applications
+  - name: Eligibility
+  - name: Payments
+  - name: Test Endpoints
   - name: health
 
+
 paths:
+  /addresses/validate:
+    post:
+      tags:
+        - Addresses
+      summary: Validate an address with the USPS address validation service
+      operationId: path.to.handler
+      responses:
+        "200":
+          $ref: "#/components/responses/AddressValidationResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # TBD
+
+  /application/renewal:
+    post:
+      tags:
+        - Applications
+      summary: Start and persist a passport RENEWAL (DS-82) application
+      operationId: path.to.handler
+      responses:
+        "200":
+          $ref: "#/components/responses/RenewalApplicationResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # TBD
+
+  /application/{app_id}/photo:
+    post:
+      tags:
+        - Applications
+      summary: Submit a photo for validation and persist if successful
+      operationId: path.to.handler
+      parameters:
+        - name: app_id
+          in: path
+          schema:
+            type: string
+            format: uuid
+          description: ID of Application to attach photo to
+          required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/PersistPhotoResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # TBD
+
+  /eligibility/check:
+    post:
+      tags:
+        - Eligibility
+      summary: Verify eligibility for online passport renewal
+      operationId: path.to.handler
+      responses:
+        "200":
+          $ref: "#/components/responses/EligibilityCheckResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # TBD
+
   /health:
     get:
       summary: Health Check for the OPR API
@@ -95,3 +177,424 @@ paths:
                           status:
                             type: string
                             example: up
+
+  /payment:
+    post:
+      tags:
+        - Payments
+      summary: Process a payment
+      operationId: path.to.handler
+      responses:
+        "200":
+          $ref: "#/components/responses/PaymentProcessedResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # TBD
+
+components:
+
+  #
+  # RESPONSES
+  #
+  responses:
+    EligibilityCheckResponse:
+      description: Translated reply from external Eligiblity Service
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/SuccessfulResponse"
+                properties:
+                  data:
+                    $ref: "#/components/schemas/EligibilityCheckResponseData"
+
+    AddressValidationResponse:
+      description: Translated reply from USPS Address Validation Service
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/SuccessfulResponse"
+                properties:
+                  data:
+                    $ref: "#/components/schemas/AddressValidationResponseData"
+
+    RenewalApplicationResponse:
+      description: Newly-created OPR application w/ some masked sensitive fields
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/SuccessfulResponse"
+                properties:
+                  data:
+                    $ref: "#/components/schemas/RenewalApplicationResponseData"
+
+    PersistPhotoResponse:
+      description: Photo errors if rejected by external Photo Quality Service OR metadata about persisted photo
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/SuccessfulResponse"
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PersistPhotoResponseData"
+
+    PaymentProcessedResponse:
+      description: Payment processing info w/ data specific to payment processors
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/SuccessfulResponse"
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PaymentProcessedResponseData"
+
+    BadRequest:
+      description: There was a problem with your request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  #
+  # SCHEMAS
+  #
+  schemas:
+    SuccessfulResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        meta:
+          $ref: "#/components/schemas/Meta"
+        data:
+          oneOf:
+            - type: array
+            - type: object
+        warnings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationErrorDetail"
+      required: ["statusCode"]
+      additionalProperties: false
+
+    ErrorResponse:
+      type: object
+      properties:
+        status_code:
+          type: integer
+        message:
+          type: string
+        meta:
+          $ref: "#/components/schemas/Meta"
+        data:
+          oneOf:
+            - type: array
+            - type: object
+        warnings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationErrorDetail"
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationErrorDetail"
+      required: ["statusCode", "errors"]
+      additionalProperties: false
+
+    Meta:
+      type: object
+      properties:
+        resource:
+          type: string
+        method:
+          type: string
+        query:
+          type: object
+        paging:
+          type: object
+          properties:
+            pageOffset:
+              type: integer
+            pageSize:
+              type: integer
+            totalRecords:
+              type: integer
+            totalPages:
+              type: integer
+            orderBy:
+              type: string
+            orderDirection:
+              type: string
+      required: ["resource", "method"]
+      additionalProperties: false
+
+    Address:
+      type: object
+      properties:
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          XXX enum
+        country:
+          XXX enum
+
+    Applicant:
+      type: object
+      properties:
+        # TBD do we need to expose this?
+        # id:
+        #   type: string
+        #   format: uuid
+        #   example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
+        #   nullable: true
+        first:
+          type: string
+        middle:
+          type: string
+        last:
+          type: string
+        dob:
+          type: date
+          example: "2004-08-08"
+        gender:
+          type: string
+          enum:
+            - m
+            - f
+            - x # TBD - there's currently an ask to add nonbinary values
+        placeOfBirth:
+          type: string
+          # TBD There are some contraints for the formatting depending on some characteristics (domestic, foreign, etc. dependent on TDIS)
+        ssn:
+          $ref: "#/components/schemas/MaskedSsn"
+          nullabe: true
+        primaryAddress:
+          $ref: "#/components/schemas/Address"
+          description: A current mailing address
+        permanentAddress:
+          $ref: "#/components/schemas/Address"
+          description: The address that will be printed on official documents
+        alternateNames:
+          type: array # TBD maybe ok to just store as delimited string
+          items:
+            type: string
+        hairColor:
+          type: string
+          example: "Brown"
+          nullabe: true
+        eyeColor:
+          type: string
+          example: "Blue"
+          nullabe: true
+
+    ApplicationStatus:
+      type: object
+      properties:
+        applicationId:
+          type: string
+          format: uuid
+          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
+        currentStatus:
+          type: string
+          enum:
+            - in_progress # don't need this until we save user's place
+            - submitted
+            - pending_payment_received # TBD if we need this waiting for treasury
+            - approved
+            - rejected
+            # values TBD
+        datetimeStarted:
+          type: string
+          format: date-time
+          example: "2024-05-08T12:34:56.789789+00:00"
+        datetimeSubmitted:
+          type: string
+          format: date-time
+          example: "2024-05-08T12:34:56.789789+00:00"
+          nullable: true
+        datetimeCompleted:
+          type: string
+          format: date-time
+          example: "2024-05-08T12:34:56.789789+00:00"
+          nullable: true
+        
+    MaskedPhone:
+      type: object
+      properties:
+        intCode:
+          type: string
+          example: "1"
+          pattern: "^[0-9]{1,3}"
+          nullable: true
+        phoneNumber:
+          $ref: "#/components/schemas/MaskedPhoneNumber"
+          nullable: true
+        phoneType:
+          type: string
+          enum:
+            - home
+            - work
+            - cell
+            - other
+          nullable: true
+        isPrimary:
+          type: boolean
+
+    MaskedPhoneNumber:
+      type: string
+      example: "***-***-1234"
+      pattern: '^\*{3}\-\*{3}\-[0-9]{4}$'
+
+    MaskedSsn:
+      type: string
+      example: "***-**-1234"
+      pattern: '^\*{3}-\*{2}-\d{4}$'
+
+    PhotoQualityStatus:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+        # errors: TBD what PQS returns and if we translate for response
+
+    RenewalApplication:
+      type: object
+      propeties:
+        id:
+          type: string
+          format: uuid
+          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
+        applicationType:
+          type: enum # TBD renewal/ds82
+        applicant:
+          $ref: "#/components/schemas/Applicant"
+        email:
+          type: string
+          format: email
+          example: "a.b.c@email.com"
+          nullable: true
+          minLength: 3
+        phone:
+          $ref: "#/components/schemas/MaskedPhone"
+        # TBD combine into another table - current thinking is these values can change and could be attached ot this application "snapshot"
+        heightFt:
+          type: number
+        heightIn:
+          type: number
+        occupation:
+          type: string
+        employerOrSchool:
+          type: string
+        # TBD eSignature data
+
+    ValidationErrorDetail:
+      type: object
+      properties:
+        errorType:
+          type: string
+          example: "required"
+        message:
+          example: "applicant.dob is required."
+          description: "Somewhat user-friendly description of the error. May contain PII."
+          type: string
+        rule:
+          description: >
+            Usage varies depending on the source of the validation error. OpenAPI validation
+            errors will set this to the expected value behavior (i.e the max length, or pattern).
+          oneOf:
+            - type: string
+            - type: number
+            - type: integer
+            - type: boolean
+            - type: array
+            - type: object
+          nullable: true
+        field:
+          description: "Field path, when the error is associated with a specific field."
+          example: "applicant.dob"
+          nullable: true
+          type: string
+      additionalProperties: false
+
+    #
+    # API RESPONSE DATA
+    #
+
+    EligibilityCheckResponseData:
+      type: object
+      properties:
+        isEligible:
+          type: boolean
+        # errors: TBD
+
+    AddressValidationResponseData:
+      type: object
+      properties:
+        matches:
+          type: boolean
+          description: True if the suggested address matches the supplied address
+        supplied:
+          type: object
+          $ref: "#/components/schemas/Address"
+        suggested:
+          type: object
+          $ref: "#/components/schemas/Address"
+          nullabe: true
+        # TBD USPS response props 
+
+    RenewalApplicationResponseData:
+      type: object
+      properties:
+        application:
+          $ref: "#/components/schemas/RenewalApplication"
+        status:
+          $ref: "#/components/schemas/ApplicationStatus"
+        
+    PersistPhotoResponseData:
+      type: object
+      properties:
+        applicationId:
+          type: string
+          format: uuid
+          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
+        datetimeUploaded:
+          type: string
+          format: date-time
+          example: "2024-05-08T12:34:56.789789+00:00"
+        storageId:
+          type: string
+          # possibly some S3 key that can be used to generate temporary URL
+        status:
+          $ref: "#/components/schemas/PhotoQualityStatus"
+
+    PaymentProcessedResponseData:
+      type: object
+      properties:
+        applicationId:
+          type: string
+          format: uuid
+          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
+        datetimeProcessed:
+          type: string
+          format: date-time
+          example: "2024-05-08T12:34:56.789789+00:00"
+        processor:
+          type: string
+          enum:
+            - paygov
+            # other processors TBD
+        # TBD other props returned by payment methods
