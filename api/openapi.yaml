@@ -24,7 +24,6 @@ paths:
       tags:
         - Addresses
       summary: Validate an address with the USPS address validation service
-      operationId: path.to.handler
       responses:
         "200":
           $ref: "#/components/responses/AddressValidationResponse"
@@ -34,14 +33,13 @@ paths:
         content:
           application/json:
             schema:
-              # TBD
+              $ref: "#/components/schemas/AddressValidationRequest"
 
   /application/renewal:
     post:
       tags:
         - Applications
       summary: Start and persist a passport RENEWAL (DS-82) application
-      operationId: path.to.handler
       responses:
         "200":
           $ref: "#/components/responses/RenewalApplicationResponse"
@@ -51,14 +49,13 @@ paths:
         content:
           application/json:
             schema:
-              # TBD
+              $ref: "#/components/schemas/RenewalApplicationCreateRequest"
 
   /application/{app_id}/photo:
     post:
       tags:
         - Applications
       summary: Submit a photo for validation and persist if successful
-      operationId: path.to.handler
       parameters:
         - name: app_id
           in: path
@@ -76,14 +73,13 @@ paths:
         content:
           application/json:
             schema:
-              # TBD
+              $ref: "#/components/schemas/PersistPhotoRequest"
 
   /eligibility/check:
     post:
       tags:
         - Eligibility
       summary: Verify eligibility for online passport renewal
-      operationId: path.to.handler
       responses:
         "200":
           $ref: "#/components/responses/EligibilityCheckResponse"
@@ -93,7 +89,7 @@ paths:
         content:
           application/json:
             schema:
-              # TBD
+              $ref: "#/components/schemas/EligibilityCheckRequest"
 
   /health:
     get:
@@ -183,7 +179,6 @@ paths:
       tags:
         - Payments
       summary: Process a payment
-      operationId: path.to.handler
       responses:
         "200":
           $ref: "#/components/responses/PaymentProcessedResponse"
@@ -193,7 +188,7 @@ paths:
         content:
           application/json:
             schema:
-              # TBD
+              $ref: "#/components/schemas/PaymentProcessedRequest"
 
 components:
 
@@ -208,7 +203,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/EligibilityCheckResponseData"
 
@@ -219,7 +214,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/AddressValidationResponseData"
 
@@ -230,7 +225,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/RenewalApplicationResponseData"
 
@@ -241,7 +236,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/PersistPhotoResponseData"
 
@@ -252,7 +247,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/PaymentProcessedResponseData"
 
@@ -348,9 +343,20 @@ components:
         city:
           type: string
         state:
-          XXX enum
+          type: string
+          enum:
+            - MD
+            - VA
+            - DC
+            # TODO: fill in states
+        zip:
+          type: string
         country:
-          XXX enum
+          type: string
+          enum:
+            - US
+            - at_sea # TODO: find TGIS codes for this
+            - in_flight # TODO: find TGIS codes for this
 
     Applicant:
       type: object
@@ -431,7 +437,28 @@ components:
           format: date-time
           example: "2024-05-08T12:34:56.789789+00:00"
           nullable: true
-        
+
+    ExistingPassport:
+      type: object
+      properties:
+        nameAsPrinted:
+          type: string
+        bookNumber:
+          type: string
+          nullable: true
+        bookIssueDate: 
+          type: string
+          format: date
+          nullable: true
+        # any way to make this only nullable if book* is non-null? could nest and do oneOf: i guess
+        cardNumber:
+          type: string
+          nullable: true
+        cardIssueDate:
+          type: string
+          format: date
+          nullable: true
+
     MaskedPhone:
       type: object
       properties:
@@ -473,7 +500,7 @@ components:
 
     RenewalApplication:
       type: object
-      propeties:
+      properties:
         id:
           type: string
           format: uuid
@@ -598,3 +625,47 @@ components:
             - paygov
             # other processors TBD
         # TBD other props returned by payment methods
+
+    #
+    # API Request Data
+    #
+
+    AddressValidationRequest:
+      type: object
+      properties:
+        $ref: "#/components/schemas/Address"
+
+    RenewalApplicationCreateRequest:
+      type: object
+      properties:
+        $ref: "#/components/schemas/RenewalApplication"
+
+    PersistPhotoRequest:
+      type: object
+      properties:
+        photo1:
+          type: string # TODO: change to multipart etc.
+        photo2: # TODO: Doublecheck photo 2/3 aren't necessary for digital
+          type: string
+        photo3: 
+          type: string
+        
+
+    EligibilityCheckRequest:
+      type: object
+      properties:
+        dateExpires: # whatever the eligibility criteria are
+          type: string
+          format: date
+
+    PaymentProcessedRequest:
+      type: object
+      properties:
+        caseId:
+          type: string
+          format: uuid
+        casePersonId:
+          type: string
+          format: uuid
+        eirlIndicator:
+          type: string
