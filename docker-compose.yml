@@ -23,6 +23,9 @@ services:
       - 8000:8000
     environment:
       POSTGRES_CONNECTION_STRING: 'postgresql+psycopg2://opr:secret123@db:5432/opr'
+    volumes:
+      - ./api:/app
+      - /app/.venv
     depends_on:
       - mock-external-apis
       - db
