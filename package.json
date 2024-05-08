@@ -1,0 +1,17 @@
+{
+  "name": "tools",
+  "version": "0.1.0",
+  "description": "Tools and scripts for the OPR project",
+  "engines": {
+    "node": ">=18",
+    "npm": ">=9"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2"
+  }
+}

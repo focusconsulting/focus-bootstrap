@@ -14,8 +14,9 @@
 import socket
 from typing import Any
 
-import opr_api.utils.logging
 from urllib3 import connection
+
+import opr_api.utils.logging
 
 
 def init() -> None:

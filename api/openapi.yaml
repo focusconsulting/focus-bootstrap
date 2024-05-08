@@ -3,6 +3,8 @@ info:
   title: OPR API
   description: An API for managing passport renewals
   version: 0.1.0
+  contact:
+    name: Team eSimplicity
 
 servers:
   - url: /v1
@@ -13,6 +15,8 @@ tags:
   - name: Eligibility
   - name: Payments
   - name: Test Endpoints
+  - name: health
+
 
 paths:
   /addresses/validate:
@@ -94,7 +98,9 @@ paths:
   /health:
     get:
       summary: Health Check for the OPR API
-      operationId: opr_api.handlers.health
+      tags:
+        - health
+      operationId: opr_api.controllers.health
       responses:
         "200":
           description: API is available
@@ -128,7 +134,9 @@ paths:
   /health/deep:
     get:
       summary: More extensive health check for the OPR API
-      operationId: opr_api.handlers.health_deep
+      tags:
+        - health
+      operationId: opr_api.controllers.health_deep
       responses:
         "200":
           description: Validates that the API is available and connected to the database
