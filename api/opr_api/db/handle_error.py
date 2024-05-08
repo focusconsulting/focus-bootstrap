@@ -10,8 +10,9 @@
 from typing import Any, Union
 
 import sqlalchemy
-from opr_api.utils.logging import get_logger
 from sqlalchemy.engine.base import Engine
+
+from opr_api.utils.logging import get_logger
 
 logger = get_logger(__name__)
 

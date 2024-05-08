@@ -1,2 +1,4 @@
 .DS_Store
 api/**/*.pyc
+api/.coverage
+node_modules/**

@@ -1,11 +1,14 @@
 import os
 import time
-from typing import List, Union
+from contextlib import contextmanager
+from typing import Generator, List, Union
 
 import connexion  # type: ignore
 import connexion.mock  # type: ignore
 import flask
 from flask import g
+from sqlalchemy.orm import Session
+
 from opr_api.db import init
 from opr_api.utils.logging import get_logger
 
@@ -21,6 +24,16 @@ def get_project_root_dir() -> str:
         os.path.dirname(__file__),
         "../",
     )
+
+
+@contextmanager
+def db_session() -> Generator[Session, None, None]:
+    """Get a plain SQLAlchemy Session."""
+    session = g.get("db")
+    if session is None:
+        raise Exception("No database session available in application context")
+
+    yield session
 
 
 def create_app() -> connexion.FlaskApp:

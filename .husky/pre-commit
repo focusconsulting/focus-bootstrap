@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+echo debugging the pre-commit hook 1>&2
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged --shell
+
+# Line can be commented out to debug the pre-commit hook
+# exit 1

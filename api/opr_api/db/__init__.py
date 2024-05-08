@@ -4,15 +4,16 @@ from contextlib import contextmanager
 from typing import Any, Dict, Generator, Optional, Union
 from urllib.parse import urlparse
 
-import opr_api.db.handle_error  # noqa: F401
 import psycopg2
 import sqlalchemy
 import sqlalchemy.pool as pool
-from opr_api.db.config import DbConfig, get_config
-from opr_api.utils.logging import get_logger
 from sqlalchemy import URL
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
+
+import opr_api.db.handle_error  # noqa: F401
+from opr_api.db.config import DbConfig, get_config
+from opr_api.utils.logging import get_logger
 
 logger = get_logger(__name__)
 

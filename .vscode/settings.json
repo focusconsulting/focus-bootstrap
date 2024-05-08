@@ -6,12 +6,17 @@
       "source.organizeImports": "explicit"
     }
   },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "isort.args": ["--profile", "black"],
+  "isort.importStrategy": "fromEnvironment",
   "python.analysis.autoImportCompletions": true,
   "flake8.cwd": "${workspaceFolder}/api",
   "flake8.importStrategy": "fromEnvironment",
   "black-formatter.cwd": "${workspaceFolder}/api",
   "black-formatter.importStrategy": "fromEnvironment",
   "mypy-type-checker.cwd": "${workspaceFolder}/api",
-  "mypy-type-checker.importStrategy": "fromEnvironment"
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "python.testing.pytestArgs": ["api"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
