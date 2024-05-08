@@ -30,10 +30,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AddressValidationRequest"
+        $ref: "#/components/requestBodies/AddressValidationRequest"
 
   /application/renewal:
     post:
@@ -49,7 +46,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RenewalApplicationCreateRequest"
+              $ref: "#/components/requestBodies/RenewalApplicationCreateRequest"
 
   /application/{app_id}/photo:
     post:
@@ -73,7 +70,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PersistPhotoRequest"
+              $ref: "#/components/requestBodies/PersistPhotoRequest"
 
   /eligibility/check:
     post:
@@ -89,7 +86,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EligibilityCheckRequest"
+              $ref: "#/components/requestBodies/EligibilityCheckRequest"
 
   /health:
     get:
@@ -188,7 +185,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PaymentProcessedRequest"
+              $ref: "#/components/requestBodies/PaymentProcessedRequest"
 
 components:
 
@@ -205,7 +202,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/schemas/EligibilityCheckResponseData"
+                    $ref: "#/components/responseData/EligibilityCheckResponseData"
 
     AddressValidationResponse:
       description: Translated reply from USPS Address Validation Service
@@ -216,7 +213,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/schemas/AddressValidationResponseData"
+                    $ref: "#/components/responseData/AddressValidationResponseData"
 
     RenewalApplicationResponse:
       description: Newly-created OPR application w/ some masked sensitive fields
@@ -227,7 +224,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/schemas/RenewalApplicationResponseData"
+                    $ref: "#/components/responseData/RenewalApplicationResponseData"
 
     PersistPhotoResponse:
       description: Photo errors if rejected by external Photo Quality Service OR metadata about persisted photo
@@ -238,7 +235,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/schemas/PersistPhotoResponseData"
+                    $ref: "#/components/responseData/PersistPhotoResponseData"
 
     PaymentProcessedResponse:
       description: Payment processing info w/ data specific to payment processors
@@ -249,7 +246,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/schemas/PaymentProcessedResponseData"
+                    $ref: "#/components/responseData/PaymentProcessedResponseData"
 
     BadRequest:
       description: There was a problem with your request
@@ -374,7 +371,8 @@ components:
         last:
           type: string
         dob:
-          type: date
+          type: string
+          format: date
           example: "2004-08-08"
         gender:
           type: string
@@ -387,7 +385,7 @@ components:
           # TBD There are some contraints for the formatting depending on some characteristics (domestic, foreign, etc. dependent on TDIS)
         ssn:
           $ref: "#/components/schemas/MaskedSsn"
-          nullabe: true
+          nullable: true
         primaryAddress:
           $ref: "#/components/schemas/Address"
           description: A current mailing address
@@ -401,11 +399,11 @@ components:
         hairColor:
           type: string
           example: "Brown"
-          nullabe: true
+          nullable: true
         eyeColor:
           type: string
           example: "Blue"
-          nullabe: true
+          nullable: true
 
     ApplicationStatus:
       type: object
@@ -557,10 +555,7 @@ components:
           type: string
       additionalProperties: false
 
-    #
-    # API RESPONSE DATA
-    #
-
+  responseData:
     EligibilityCheckResponseData:
       type: object
       properties:
@@ -580,7 +575,7 @@ components:
         suggested:
           type: object
           $ref: "#/components/schemas/Address"
-          nullabe: true
+          nullable: true
         # TBD USPS response props 
 
     RenewalApplicationResponseData:
@@ -626,46 +621,51 @@ components:
             # other processors TBD
         # TBD other props returned by payment methods
 
-    #
-    # API Request Data
-    #
+  requestBodies:
 
     AddressValidationRequest:
-      type: object
-      properties:
-        $ref: "#/components/schemas/Address"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Address"
 
     RenewalApplicationCreateRequest:
-      type: object
-      properties:
-        $ref: "#/components/schemas/RenewalApplication"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/RenewalApplication"
 
     PersistPhotoRequest:
-      type: object
-      properties:
-        photo1:
-          type: string # TODO: change to multipart etc.
-        photo2: # TODO: Doublecheck photo 2/3 aren't necessary for digital
-          type: string
-        photo3: 
-          type: string
+      content:
+        application/json:
+          schema:
+            properties:
+              photo1:
+                type: string # TODO: change to multipart etc.
+              photo2: # TODO: Doublecheck photo 2/3 aren't necessary for digital
+                type: string
+              photo3: 
+                type: string
         
-
     EligibilityCheckRequest:
-      type: object
-      properties:
-        dateExpires: # whatever the eligibility criteria are
-          type: string
-          format: date
+      content:
+        application/json:
+          schema:
+            properties:
+              dateExpires: # whatever the eligibility criteria are
+                type: string
+                format: date
 
     PaymentProcessedRequest:
-      type: object
-      properties:
-        caseId:
-          type: string
-          format: uuid
-        casePersonId:
-          type: string
-          format: uuid
-        eirlIndicator:
-          type: string
+      content:
+        application/json:
+          schema:
+            properties:
+              caseId:
+                type: string
+                format: uuid
+              casePersonId:
+                type: string
+                format: uuid
+              eirlIndicator:
+                type: string
