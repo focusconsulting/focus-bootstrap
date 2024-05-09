@@ -15,7 +15,7 @@ tags:
   - name: Eligibility
   - name: Payments
   - name: Test Endpoints
-  - name: health
+  - name: Health
 
 
 paths:
@@ -24,41 +24,32 @@ paths:
       tags:
         - Addresses
       summary: Validate an address with the USPS address validation service
-      operationId: path.to.handler
       responses:
         "200":
           $ref: "#/components/responses/AddressValidationResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              # TBD
+        $ref: "#/components/requestBodies/AddressValidationRequest"
 
   /application/renewal:
     post:
       tags:
         - Applications
       summary: Start and persist a passport RENEWAL (DS-82) application
-      operationId: path.to.handler
       responses:
         "200":
           $ref: "#/components/responses/RenewalApplicationResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              # TBD
+        $ref: "#/components/requestBodies/RenewalApplicationCreateRequest"
 
   /application/{app_id}/photo:
     post:
       tags:
         - Applications
       summary: Submit a photo for validation and persist if successful
-      operationId: path.to.handler
       parameters:
         - name: app_id
           in: path
@@ -73,33 +64,26 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              # TBD
+        $ref: "#/components/requestBodies/PersistPhotoRequest"
 
   /eligibility/check:
     post:
       tags:
         - Eligibility
       summary: Verify eligibility for online passport renewal
-      operationId: path.to.handler
       responses:
         "200":
           $ref: "#/components/responses/EligibilityCheckResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              # TBD
+        $ref: "#/components/requestBodies/EligibilityCheckRequest"
 
   /health:
     get:
       summary: Health Check for the OPR API
       tags:
-        - health
+        - Health
       operationId: opr_api.controllers.health
       responses:
         "200":
@@ -135,7 +119,7 @@ paths:
     get:
       summary: More extensive health check for the OPR API
       tags:
-        - health
+        - Health
       operationId: opr_api.controllers.health_deep
       responses:
         "200":
@@ -183,17 +167,13 @@ paths:
       tags:
         - Payments
       summary: Process a payment
-      operationId: path.to.handler
       responses:
         "200":
           $ref: "#/components/responses/PaymentProcessedResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              # TBD
+        $ref: "#/components/requestBodies/PaymentProcessedRequest"
 
 components:
 
@@ -208,7 +188,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/EligibilityCheckResponseData"
 
@@ -219,7 +199,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/AddressValidationResponseData"
 
@@ -230,7 +210,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/RenewalApplicationResponseData"
 
@@ -241,7 +221,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/PersistPhotoResponseData"
 
@@ -252,7 +232,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/SuccessfulResponse"
-                properties:
+              - properties:
                   data:
                     $ref: "#/components/schemas/PaymentProcessedResponseData"
 
@@ -348,9 +328,20 @@ components:
         city:
           type: string
         state:
-          XXX enum
+          type: string
+          enum:
+            - MD
+            - VA
+            - DC
+            # TODO: fill in states
+        zip:
+          type: string
         country:
-          XXX enum
+          type: string
+          enum:
+            - US
+            - at_sea # TODO: find TGIS codes for this
+            - in_flight # TODO: find TGIS codes for this
 
     Applicant:
       type: object
@@ -368,7 +359,8 @@ components:
         last:
           type: string
         dob:
-          type: date
+          type: string
+          format: date
           example: "2004-08-08"
         gender:
           type: string
@@ -381,7 +373,7 @@ components:
           # TBD There are some contraints for the formatting depending on some characteristics (domestic, foreign, etc. dependent on TDIS)
         ssn:
           $ref: "#/components/schemas/MaskedSsn"
-          nullabe: true
+          nullable: true
         primaryAddress:
           $ref: "#/components/schemas/Address"
           description: A current mailing address
@@ -395,11 +387,11 @@ components:
         hairColor:
           type: string
           example: "Brown"
-          nullabe: true
+          nullable: true
         eyeColor:
           type: string
           example: "Blue"
-          nullabe: true
+          nullable: true
 
     ApplicationStatus:
       type: object
@@ -431,7 +423,28 @@ components:
           format: date-time
           example: "2024-05-08T12:34:56.789789+00:00"
           nullable: true
-        
+
+    ExistingPassport:
+      type: object
+      properties:
+        nameAsPrinted:
+          type: string
+        bookNumber:
+          type: string
+          nullable: true
+        bookIssueDate: 
+          type: string
+          format: date
+          nullable: true
+        # any way to make this only nullable if book* is non-null? could nest and do oneOf: i guess
+        cardNumber:
+          type: string
+          nullable: true
+        cardIssueDate:
+          type: string
+          format: date
+          nullable: true
+
     MaskedPhone:
       type: object
       properties:
@@ -473,13 +486,15 @@ components:
 
     RenewalApplication:
       type: object
-      propeties:
+      properties:
         id:
           type: string
           format: uuid
           example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
         applicationType:
-          type: enum # TBD renewal/ds82
+          type: string
+          enum:
+            - renewal  # TBD other app types, may 
         applicant:
           $ref: "#/components/schemas/Applicant"
         email:
@@ -530,10 +545,6 @@ components:
           type: string
       additionalProperties: false
 
-    #
-    # API RESPONSE DATA
-    #
-
     EligibilityCheckResponseData:
       type: object
       properties:
@@ -553,7 +564,7 @@ components:
         suggested:
           type: object
           $ref: "#/components/schemas/Address"
-          nullabe: true
+          nullable: true
         # TBD USPS response props 
 
     RenewalApplicationResponseData:
@@ -598,3 +609,64 @@ components:
             - paygov
             # other processors TBD
         # TBD other props returned by payment methods
+
+    PersistPhotoRequest:
+      type: object
+      properties:
+        photo1:
+          type: string # TODO: change to multipart etc.
+        photo2: # TODO: Doublecheck photo 2/3 aren't necessary for digital
+          type: string
+        photo3: 
+          type: string
+        
+    EligibilityCheckRequest:
+      type: object
+      properties:
+        dateExpires: # whatever the eligibility criteria are
+          type: string
+          format: date
+
+    PaymentProcessedRequest:
+        type: object
+        properties:
+          caseId:
+            type: string
+            format: uuid
+          casePersonId:
+            type: string
+            format: uuid
+          eirlIndicator:
+            type: string
+
+  requestBodies:
+
+    AddressValidationRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Address"
+
+    RenewalApplicationCreateRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/RenewalApplication"
+
+    PersistPhotoRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PersistPhotoRequest"
+        
+    EligibilityCheckRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EligibilityCheckRequest"
+
+    PaymentProcessedRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PaymentProcessedRequest"
