@@ -20,8 +20,8 @@
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "cd api && poetry config virtualenvs.in-project true && poetry install --no-root"
-  
+  "postCreateCommand": "npm install && cd api && poetry config virtualenvs.in-project true && poetry install --no-root && cd ../client && npm install"
+
   // Configure tool-specific properties.
   // "customizations": {},
 

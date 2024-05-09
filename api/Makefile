@@ -119,3 +119,12 @@ api-image-build: ## Build release image
 
 dev-build: ## Build development container
 	docker-compose build
+
+install-deps: ## Install the poetry dependencies
+	 poetry install --no-root
+
+help: ## Displays help information
+	@grep -Eh '^[[:print:]]+:.*?##' $(MAKEFILE_LIST) | \
+	sort -d | \
+	awk -F':.*?## ' '{printf "\033[36m%s\033[0m\t%s\n", $$1, $$2}' | \
+	column -t -s "$$(printf '\t')"

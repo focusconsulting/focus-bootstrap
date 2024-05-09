@@ -27,6 +27,7 @@ LOGGING: Dict[str, Any] = {
     "root": {"handlers": ["console"], "level": "WARN"},
     "loggers": {
         "alembic": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "werkzeug": {"handlers": ["console"], "level": "WARN", "propagate": False},
     },
 }
 
@@ -76,7 +77,7 @@ def override_logging_levels() -> None:
 
     The format is "name1=level,name2=level". For example:
 
-      LOGGING_LEVEL="massgov.pfml.fineos=DEBUG,sqlalchemy=INFO"
+      LOGGING_LEVEL="sqlalchemy=INFO"
     """
     for override in os.environ.get("LOGGING_LEVEL", "").split(","):
         if "=" not in override:
