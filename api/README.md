@@ -30,7 +30,7 @@ More details and considerations around this tooling can be found in [docs](../do
 
 ## Type checking
 
-TODO
+The python code is statically checked using a tool called [MyPy](https://mypy.readthedocs.io/en/stable/index.html) which implements the spec defined in [PEP-0484](https://peps.python.org/pep-0484/) and is used as part of the linting process. The goal is enforce types everywhere as this provides more guarantees that code will operate as expected in production and reduces the risk of a runtime error occurring. The team aims to reduce the use of `# type: ignore` as much as possible and the CI steps guarantee that all merged code passes the type checker
 
 ## DB Migrations
 

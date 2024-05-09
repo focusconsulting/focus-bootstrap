@@ -46,7 +46,6 @@ def create_app() -> connexion.FlaskApp:
     # Enable mock responses for unimplemented paths.
     resolver = connexion.mock.MockResolver(mock_all=False)
 
-    # TODO validation is not working for responses
     app = connexion.FlaskApp(
         __name__,
         strict_validation=True,
