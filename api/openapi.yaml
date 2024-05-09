@@ -43,10 +43,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/requestBodies/RenewalApplicationCreateRequest"
+        $ref: "#/components/requestBodies/RenewalApplicationCreateRequest"
 
   /application/{app_id}/photo:
     post:
@@ -67,10 +64,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/requestBodies/PersistPhotoRequest"
+        $ref: "#/components/requestBodies/PersistPhotoRequest"
 
   /eligibility/check:
     post:
@@ -83,10 +77,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/requestBodies/EligibilityCheckRequest"
+        $ref: "#/components/requestBodies/EligibilityCheckRequest"
 
   /health:
     get:
@@ -182,10 +173,7 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/requestBodies/PaymentProcessedRequest"
+        $ref: "#/components/requestBodies/PaymentProcessedRequest"
 
 components:
 
@@ -202,7 +190,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/responseData/EligibilityCheckResponseData"
+                    $ref: "#/components/schemas/EligibilityCheckResponseData"
 
     AddressValidationResponse:
       description: Translated reply from USPS Address Validation Service
@@ -213,7 +201,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/responseData/AddressValidationResponseData"
+                    $ref: "#/components/schemas/AddressValidationResponseData"
 
     RenewalApplicationResponse:
       description: Newly-created OPR application w/ some masked sensitive fields
@@ -224,7 +212,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/responseData/RenewalApplicationResponseData"
+                    $ref: "#/components/schemas/RenewalApplicationResponseData"
 
     PersistPhotoResponse:
       description: Photo errors if rejected by external Photo Quality Service OR metadata about persisted photo
@@ -235,7 +223,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/responseData/PersistPhotoResponseData"
+                    $ref: "#/components/schemas/PersistPhotoResponseData"
 
     PaymentProcessedResponse:
       description: Payment processing info w/ data specific to payment processors
@@ -246,7 +234,7 @@ components:
               - $ref: "#/components/schemas/SuccessfulResponse"
               - properties:
                   data:
-                    $ref: "#/components/responseData/PaymentProcessedResponseData"
+                    $ref: "#/components/schemas/PaymentProcessedResponseData"
 
     BadRequest:
       description: There was a problem with your request
@@ -504,7 +492,9 @@ components:
           format: uuid
           example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
         applicationType:
-          type: enum # TBD renewal/ds82
+          type: string
+          enum:
+            - renewal  # TBD other app types, may 
         applicant:
           $ref: "#/components/schemas/Applicant"
         email:
@@ -555,7 +545,6 @@ components:
           type: string
       additionalProperties: false
 
-  responseData:
     EligibilityCheckResponseData:
       type: object
       properties:
@@ -621,6 +610,35 @@ components:
             # other processors TBD
         # TBD other props returned by payment methods
 
+    PersistPhotoRequest:
+      type: object
+      properties:
+        photo1:
+          type: string # TODO: change to multipart etc.
+        photo2: # TODO: Doublecheck photo 2/3 aren't necessary for digital
+          type: string
+        photo3: 
+          type: string
+        
+    EligibilityCheckRequest:
+      type: object
+      properties:
+        dateExpires: # whatever the eligibility criteria are
+          type: string
+          format: date
+
+    PaymentProcessedRequest:
+        type: object
+        properties:
+          caseId:
+            type: string
+            format: uuid
+          casePersonId:
+            type: string
+            format: uuid
+          eirlIndicator:
+            type: string
+
   requestBodies:
 
     AddressValidationRequest:
@@ -639,33 +657,16 @@ components:
       content:
         application/json:
           schema:
-            properties:
-              photo1:
-                type: string # TODO: change to multipart etc.
-              photo2: # TODO: Doublecheck photo 2/3 aren't necessary for digital
-                type: string
-              photo3: 
-                type: string
+            $ref: "#/components/schemas/PersistPhotoRequest"
         
     EligibilityCheckRequest:
       content:
         application/json:
           schema:
-            properties:
-              dateExpires: # whatever the eligibility criteria are
-                type: string
-                format: date
+            $ref: "#/components/schemas/EligibilityCheckRequest"
 
     PaymentProcessedRequest:
       content:
         application/json:
           schema:
-            properties:
-              caseId:
-                type: string
-                format: uuid
-              casePersonId:
-                type: string
-                format: uuid
-              eirlIndicator:
-                type: string
+            $ref: "#/components/schemas/PaymentProcessedRequest"
