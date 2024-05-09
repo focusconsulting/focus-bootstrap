@@ -15,7 +15,7 @@ tags:
   - name: Eligibility
   - name: Payments
   - name: Test Endpoints
-  - name: health
+  - name: Health
 
 
 paths:
@@ -83,7 +83,7 @@ paths:
     get:
       summary: Health Check for the OPR API
       tags:
-        - health
+        - Health
       operationId: opr_api.controllers.health
       responses:
         "200":
@@ -119,7 +119,7 @@ paths:
     get:
       summary: More extensive health check for the OPR API
       tags:
-        - health
+        - Health
       operationId: opr_api.controllers.health_deep
       responses:
         "200":
