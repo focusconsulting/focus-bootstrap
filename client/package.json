@@ -30,9 +30,11 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.19",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "eslint-plugin-storybook": "^0.8.0",
+    "postcss": "^8.4.38",
     "sass": "^1.77.0",
     "storybook": "^8.0.10",
     "typescript": "^5"
