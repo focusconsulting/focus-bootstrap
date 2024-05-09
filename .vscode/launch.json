@@ -11,6 +11,7 @@
       "program": "${workspaceFolder}/api/opr_api/__main__.py",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}/api",
+      "justMyCode": false,
       "env": {
         "PYTHONPATH": "${workspaceFolder}/api",
         "POSTGRES_CONNECTION_STRING": "postgresql+psycopg2://opr:secret123@localhost:5432/opr"

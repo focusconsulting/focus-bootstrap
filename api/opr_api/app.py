@@ -6,8 +6,10 @@ from typing import Generator, List, Union
 import connexion  # type: ignore
 import connexion.mock  # type: ignore
 import flask
+from connexion.middleware import MiddlewarePosition  # type: ignore
 from flask import g
 from sqlalchemy.orm import Session
+from starlette.middleware.cors import CORSMiddleware
 
 from opr_api.db import init
 from opr_api.utils.logging import get_logger
@@ -49,6 +51,16 @@ def create_app() -> connexion.FlaskApp:
         __name__,
         strict_validation=True,
         validate_responses=True,
+    )
+
+    # These settings should get adjusted based on how the API and consumers are deployed
+    app.add_middleware(
+        CORSMiddleware,
+        position=MiddlewarePosition.BEFORE_EXCEPTION,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
     app.add_api(
         openapi_filenames()[0],
