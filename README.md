@@ -1,14 +1,14 @@
-# OPR
+# Bootstrap
 
 ## Table of contents
 
-- [Documentation](./README.md#documentation)
-- [Developer Setup](./README.md#developer-setup)
-  - [API](./api/README.md#developer-setup)
-  - [Client](./client/README.md#developer-setup)
-  - [Infrastructure](./infrastructure/README.md#developer-setup)
-- [Using DevContainers](./README.md#using-devcontainers)
-- [Directories](./README.md#directory-structure)
+-   [Documentation](./README.md#documentation)
+-   [Developer Setup](./README.md#developer-setup)
+    -   [API](./api/README.md#developer-setup)
+    -   [Client](./client/README.md#developer-setup)
+    -   [Infrastructure](./infrastructure/README.md#developer-setup)
+-   [Using DevContainers](./README.md#using-devcontainers)
+-   [Directories](./README.md#directory-structure)
 
 ## Documentation
 
@@ -26,8 +26,8 @@ The repository comes with settings configured as well as a recommended set of pl
 2. Set up the pre-commit hooks
 3. Run `npm start`
 4. Verify that the expected urls are available
-   - [Swagger UI for OPR API](http://localhost:8000/v1/ui)
-   - [Swagger UI for the mocked external APIs](http://localhost:8080/_spec/)
+    - [Swagger UI for API](http://localhost:8000/v1/ui)
+    - [Swagger UI for the mocked external APIs](http://localhost:8080/_spec/)
 5. Navigate to the other directories to setup the relevant pieces of the application
 
 ### Installing dependencies
@@ -36,15 +36,15 @@ In order to work on this repository there are a handful of tools that you will n
 
 This project requires both python and nodejs and these can be easily installed and managed with a tool called [asdf](https://asdf-vm.com/) and the relevant plugins
 
-- [asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
-- [asdf-python](https://github.com/asdf-community/asdf-python)
+-   [asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
+-   [asdf-python](https://github.com/asdf-community/asdf-python)
 
 Dependencies to install:
 
-- nodejs >=20
-- python >=3.12
-- [poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
-- [docker](https://docs.docker.com/engine/install/)
+-   nodejs >=20
+-   python >=3.12
+-   [poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
+-   [docker](https://docs.docker.com/engine/install/)
 
 ### Pre-commit hooks
 
@@ -66,7 +66,7 @@ _This is highly recommend if you are developing on a Windows or Linux machine_
 
 ```
 └── docs              Technical documentation for the project
-└── api               The OPR API
+└── api               The API
 └── client            The user experience that interacts with the API
 └── infrastructure    Infrastructure config and mock external API configuration
 ```

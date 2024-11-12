@@ -1,9 +1,9 @@
 [tool.poetry]
-name = "opr_api"
+name = "focus_api"
 version = "0.1.0"
 description = ""
 authors = ["Michael Kalish <michael.kalish@focusconsulting.io>"]
-packages = [{ include = "opr_api"}]
+packages = [{ include = "focus_api"}]
 include = ["openapi.yaml"]
 
 [tool.poetry.dependencies]

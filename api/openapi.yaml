@@ -1,801 +1,801 @@
 openapi: 3.0.3
 info:
-  title: OPR API
-  description: An API for managing passport renewals
-  version: 0.1.0
-  contact:
-    name: Team eSimplicity
+    title: API
+    description: An API for managing passport renewals
+    version: 0.1.0
+    contact:
+        name: Team eSimplicity
 
 servers:
-  - url: /v1
+    - url: /v1
 
 tags:
-  - name: Addresses
-  - name: Applications
-  - name: Eligibility
-  - name: Payments
-  - name: Test Endpoints
-  - name: Health
+    - name: Addresses
+    - name: Applications
+    - name: Eligibility
+    - name: Payments
+    - name: Test Endpoints
+    - name: Health
 
 paths:
-  /addresses/validate:
-    post:
-      tags:
-        - Addresses
-      summary: Validate an address with the USPS address validation service
-      operationId: opr_api.controllers.address
-      responses:
-        "200":
-          $ref: "#/components/responses/AddressValidationResponse"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-      requestBody:
-        $ref: "#/components/requestBodies/AddressValidationRequest"
+    /addresses/validate:
+        post:
+            tags:
+                - Addresses
+            summary: Validate an address with the USPS address validation service
+            operationId: focus_api.controllers.address
+            responses:
+                '200':
+                    $ref: '#/components/responses/AddressValidationResponse'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+            requestBody:
+                $ref: '#/components/requestBodies/AddressValidationRequest'
 
-  /application/renewal:
-    post:
-      tags:
-        - Applications
-      summary: Start and persist a passport RENEWAL (DS-82) application
-      operationId: opr_api.controllers.application.renewal
-      responses:
-        "200":
-          $ref: "#/components/responses/RenewalApplicationResponse"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-      requestBody:
-        $ref: "#/components/requestBodies/RenewalApplicationCreateRequest"
+    /application/renewal:
+        post:
+            tags:
+                - Applications
+            summary: Start and persist a passport RENEWAL (DS-82) application
+            operationId: focus_api.controllers.application.renewal
+            responses:
+                '200':
+                    $ref: '#/components/responses/RenewalApplicationResponse'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+            requestBody:
+                $ref: '#/components/requestBodies/RenewalApplicationCreateRequest'
 
-  /application/{app_id}/photo:
-    post:
-      tags:
-        - Applications
-      summary: Submit a photo for validation and persist if successful
-      operationId: opr_api.controllers.application.photo
-      parameters:
-        - name: app_id
-          in: path
-          schema:
-            type: string
-            format: uuid
-          description: ID of Application to attach photo to
-          required: true
-      responses:
-        "200":
-          $ref: "#/components/responses/PersistPhotoResponse"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-      requestBody:
-        $ref: "#/components/requestBodies/PersistPhotoRequest"
+    /application/{app_id}/photo:
+        post:
+            tags:
+                - Applications
+            summary: Submit a photo for validation and persist if successful
+            operationId: focus_api.controllers.application.photo
+            parameters:
+                - name: app_id
+                  in: path
+                  schema:
+                      type: string
+                      format: uuid
+                  description: ID of Application to attach photo to
+                  required: true
+            responses:
+                '200':
+                    $ref: '#/components/responses/PersistPhotoResponse'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+            requestBody:
+                $ref: '#/components/requestBodies/PersistPhotoRequest'
 
-  /eligibility/check:
-    post:
-      tags:
-        - Eligibility
-      operationId: opr_api.controllers.eligibility
-      summary: Verify eligibility for online passport renewal
-      responses:
-        "200":
-          $ref: "#/components/responses/EligibilityCheckResponse"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-      requestBody:
-        $ref: "#/components/requestBodies/EligibilityCheckRequest"
+    /eligibility/check:
+        post:
+            tags:
+                - Eligibility
+            operationId: focus_api.controllers.eligibility
+            summary: Verify eligibility for online passport renewal
+            responses:
+                '200':
+                    $ref: '#/components/responses/EligibilityCheckResponse'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+            requestBody:
+                $ref: '#/components/requestBodies/EligibilityCheckRequest'
 
-  /health:
-    get:
-      summary: Health Check for the OPR API
-      tags:
-        - Health
-      operationId: opr_api.controllers.health
-      responses:
-        "200":
-          $ref: "#/components/responses/HealthResponse"
+    /health:
+        get:
+            summary: Health Check for the API
+            tags:
+                - Health
+            operationId: focus_api.controllers.health
+            responses:
+                '200':
+                    $ref: '#/components/responses/HealthResponse'
 
-  /health/deep:
-    get:
-      summary: More extensive health check for the OPR API
-      tags:
-        - Health
-      operationId: opr_api.controllers.health_deep
-      responses:
-        "200":
-          $ref: "#/components/responses/HealthResponseDeep"
+    /health/deep:
+        get:
+            summary: More extensive health check for the API
+            tags:
+                - Health
+            operationId: focus_api.controllers.health_deep
+            responses:
+                '200':
+                    $ref: '#/components/responses/HealthResponseDeep'
 
-  /payment:
-    post:
-      tags:
-        - Payments
-      summary: Process a payment
-      operationId: opr_api.controllers.pay
-      responses:
-        "200":
-          $ref: "#/components/responses/PaymentProcessedResponse"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-      requestBody:
-        $ref: "#/components/requestBodies/PaymentProcessedRequest"
+    /payment:
+        post:
+            tags:
+                - Payments
+            summary: Process a payment
+            operationId: focus_api.controllers.pay
+            responses:
+                '200':
+                    $ref: '#/components/responses/PaymentProcessedResponse'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+            requestBody:
+                $ref: '#/components/requestBodies/PaymentProcessedRequest'
 
 components:
-  #
-  # RESPONSES
-  #
-  responses:
-    HealthResponse:
-      description: Status check that the API is
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/SuccessfulResponse"
-              - properties:
-                  data:
+    #
+    # RESPONSES
+    #
+    responses:
+        HealthResponse:
+            description: Status check that the API is
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/SuccessfulResponse'
+                            - properties:
+                                  data:
+                                      type: object
+                                      required:
+                                          - status
+                                          - timestamp
+                                          - apiName
+                                          - apiVersion
+                                      properties:
+                                          status:
+                                              type: string
+                                              example: up
+                                              nullable: false
+                                          timestamp:
+                                              type: string
+                                              format: date-time
+                                              nullable: false
+                                              example: '2023-06-26T01:02:03.967736+00:00'
+                                          apiName:
+                                              type: string
+                                              nullable: false
+                                              example: api
+                                          apiVersion:
+                                              type: string
+                                              nullable: false
+                                              example: v1
+
+        HealthResponseDeep:
+            description: Validates that the API is available and connected to the database
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/SuccessfulResponse'
+                            - properties:
+                                  data:
+                                      type: object
+                                      required:
+                                          - status
+                                          - timestamp
+                                          - apiName
+                                          - apiVersion
+                                          - components
+                                      properties:
+                                          status:
+                                              type: string
+                                              example: up
+                                              nullable: false
+                                          timestamp:
+                                              type: string
+                                              format: date-time
+                                              nullable: false
+                                              example: '2023-06-26T01:02:03.967736+00:00'
+                                          apiName:
+                                              type: string
+                                              nullable: false
+                                              example: api
+                                          apiVersion:
+                                              type: string
+                                              nullable: false
+                                              example: v1
+                                          components:
+                                              type: object
+                                              properties:
+                                                  db:
+                                                      type: object
+                                                      properties:
+                                                          status:
+                                                              type: string
+                                                              example: up
+
+        EligibilityCheckResponse:
+            description: Translated reply from external Eligiblity Service
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/SuccessfulResponse'
+                            - properties:
+                                  data:
+                                      $ref: '#/components/schemas/EligibilityCheckResponseData'
+                    example:
+                        statusCode: 200
+                        message: ''
+                        data:
+                            isEligible: True
+                        warnings: []
+
+        AddressValidationResponse:
+            description: Translated reply from USPS Address Validation Service
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/SuccessfulResponse'
+                            - properties:
+                                  data:
+                                      $ref: '#/components/schemas/AddressValidationResponseData'
+                    example:
+                        statusCode: 200
+                        message: ''
+                        data:
+                            matches: true
+                            supplied:
+                                $ref: '#/components/examples/exampleAddress'
+                            suggested:
+                                $ref: '#/components/examples/exampleAddress'
+                        warnings: []
+
+        RenewalApplicationResponse:
+            description: Newly-created application w/ some masked sensitive fields
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/SuccessfulResponse'
+                            - properties:
+                                  data:
+                                      $ref: '#/components/schemas/RenewalApplicationResponseData'
+                    example:
+                        statusCode: 200
+                        message: ''
+                        data:
+                            application:
+                                id: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                                applicationType: 'renewal'
+                                applicant:
+                                    first: 'Ringo'
+                                    middle: 'Beatle'
+                                    last: 'Starr'
+                                    dob: '1970-07-07'
+                                    gender: 'm'
+                                    placeOfBirth: 'England'
+                                    primaryAddress:
+                                        $ref: '#/components/examples/exampleAddress'
+                                    alternateNames: []
+                                phone:
+                                    phoneNumber: '***-***-1234'
+                                heightFt: 5
+                                heightIn: 11
+                                occupation: 'Rock Star'
+                            status:
+                                applicationId: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                                currentStatus: 'in_progress'
+                                datetimeStarted: '2024-05-08T12:34:56.789789+00:00'
+                        warnings: []
+
+        PersistPhotoResponse:
+            description: Photo errors if rejected by external Photo Quality Service OR metadata about persisted photo
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/SuccessfulResponse'
+                            - properties:
+                                  data:
+                                      $ref: '#/components/schemas/PersistPhotoResponseData'
+                    example:
+                        statusCode: 200
+                        message: ''
+                        data:
+                            applicationId: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                            datetimeUploaded: '2024-05-08T12:34:56.789789+00:00'
+                            storageId: 'abc-123-efg'
+                            status:
+                                isValid: true
+                        warnings: []
+
+        PaymentProcessedResponse:
+            description: Payment processing info w/ data specific to payment processors
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/SuccessfulResponse'
+                            - properties:
+                                  data:
+                                      $ref: '#/components/schemas/PaymentProcessedResponseData'
+                    example:
+                        statusCode: 200
+                        message: ''
+                        data:
+                            applicationId: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                            datetimeProcessed: '2024-05-08T12:34:56.789789+00:00'
+                            processor: 'paygov'
+                        warnings: []
+
+        BadRequest:
+            description: There was a problem with your request
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorResponse'
+
+    #
+    # SCHEMAS
+    #
+    schemas:
+        SuccessfulResponse:
+            type: object
+            properties:
+                statusCode:
+                    type: integer
+                    example: 200
+                message:
+                    type: string
+                    example: 'Success'
+                meta:
+                    $ref: '#/components/schemas/Meta'
+                data:
+                    oneOf:
+                        - type: array
+                        - type: object
+                    example: []
+                warnings:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ValidationErrorDetail'
+                    example: []
+            required: ['statusCode']
+            additionalProperties: false
+
+        ErrorResponse:
+            type: object
+            properties:
+                status_code:
+                    type: integer
+                message:
+                    type: string
+                meta:
+                    $ref: '#/components/schemas/Meta'
+                data:
+                    oneOf:
+                        - type: array
+                        - type: object
+                    example: []
+                warnings:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ValidationErrorDetail'
+                errors:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ValidationErrorDetail'
+            required: ['statusCode', 'errors']
+            additionalProperties: false
+
+        Meta:
+            type: object
+            properties:
+                resource:
+                    type: string
+                    example: '/v1'
+                method:
+                    type: string
+                    example: 'GET'
+                query:
                     type: object
-                    required:
-                      - status
-                      - timestamp
-                      - apiName
-                      - apiVersion
-                    properties:
-                      status:
-                        type: string
-                        example: up
-                        nullable: false
-                      timestamp:
-                        type: string
-                        format: date-time
-                        nullable: false
-                        example: "2023-06-26T01:02:03.967736+00:00"
-                      apiName:
-                        type: string
-                        nullable: false
-                        example: opr-api
-                      apiVersion:
-                        type: string
-                        nullable: false
-                        example: v1
-
-    HealthResponseDeep:
-      description: Validates that the API is available and connected to the database
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/SuccessfulResponse"
-              - properties:
-                  data:
+                    nullable: true
+                paging:
                     type: object
-                    required:
-                      - status
-                      - timestamp
-                      - apiName
-                      - apiVersion
-                      - components
+                    nullable: true
                     properties:
-                      status:
+                        pageOffset:
+                            type: integer
+                        pageSize:
+                            type: integer
+                        totalRecords:
+                            type: integer
+                        totalPages:
+                            type: integer
+                        orderBy:
+                            type: string
+                        orderDirection:
+                            type: string
+            required: ['method', 'resource']
+            additionalProperties: false
+
+        Address:
+            type: object
+            properties:
+                address1:
+                    type: string
+                    example: '123 Main St'
+                address2:
+                    type: string
+                    example: 'Apt 1'
+                city:
+                    type: string
+                    example: 'Richmond'
+                state:
+                    type: string
+                    example: 'VA'
+                    enum:
+                        - MD
+                        - VA
+                        - DC
+                        # TODO: fill in states
+                zip:
+                    type: string
+                    example: '00000'
+                country:
+                    type: string
+                    example: 'US'
+                    enum:
+                        - US
+                        - at_sea # TODO: find TGIS codes for this
+                        - in_flight # TODO: find TGIS codes for this
+
+        Applicant:
+            type: object
+            properties:
+                # TBD do we need to expose this?
+                # id:
+                #   type: string
+                #   format: uuid
+                #   example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
+                #   nullable: true
+                first:
+                    type: string
+                    example: 'Ringo'
+                middle:
+                    type: string
+                    example: 'Beatle'
+                last:
+                    type: string
+                    example: 'Starr'
+                dob:
+                    type: string
+                    format: date
+                    example: '2004-08-08'
+                gender:
+                    type: string
+                    enum:
+                        - m
+                        - f
+                        - x # TBD - there's currently an ask to add nonbinary values
+                placeOfBirth:
+                    type: string
+                    example: 'England'
+                    # TBD There are some contraints for the formatting depending on some characteristics (domestic, foreign, etc. dependent on TDIS)
+                ssn:
+                    $ref: '#/components/schemas/MaskedSsn'
+                    nullable: true
+                primaryAddress:
+                    $ref: '#/components/schemas/Address'
+                    description: A current mailing address
+                permanentAddress:
+                    $ref: '#/components/schemas/Address'
+                    description: The address that will be printed on official documents
+                alternateNames:
+                    type: array # TBD maybe ok to just store as delimited string
+                    example: []
+                    items:
                         type: string
-                        example: up
-                        nullable: false
-                      timestamp:
-                        type: string
-                        format: date-time
-                        nullable: false
-                        example: "2023-06-26T01:02:03.967736+00:00"
-                      apiName:
-                        type: string
-                        nullable: false
-                        example: opr-api
-                      apiVersion:
-                        type: string
-                        nullable: false
-                        example: v1
-                      components:
-                        type: object
-                        properties:
-                          db:
-                            type: object
-                            properties:
-                              status:
-                                type: string
-                                example: up
+                hairColor:
+                    type: string
+                    example: 'Brown'
+                    nullable: true
+                eyeColor:
+                    type: string
+                    example: 'Blue'
+                    nullable: true
 
-    EligibilityCheckResponse:
-      description: Translated reply from external Eligiblity Service
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/SuccessfulResponse"
-              - properties:
-                  data:
-                    $ref: "#/components/schemas/EligibilityCheckResponseData"
-          example:
-            statusCode: 200
-            message: ""
-            data:
-              isEligible: True
-            warnings: []
+        ApplicationStatus:
+            type: object
+            properties:
+                applicationId:
+                    type: string
+                    format: uuid
+                    example: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                currentStatus:
+                    type: string
+                    example: 'in_progress'
+                    enum:
+                        - in_progress # don't need this until we save user's place
+                        - submitted
+                        - pending_payment_received # TBD if we need this waiting for treasury
+                        - approved
+                        - rejected
+                        # values TBD
+                datetimeStarted:
+                    type: string
+                    format: date-time
+                    example: '2024-05-08T12:34:56.789789+00:00'
+                datetimeSubmitted:
+                    type: string
+                    format: date-time
+                    example: '2024-05-08T12:34:56.789789+00:00'
+                    nullable: true
+                datetimeCompleted:
+                    type: string
+                    format: date-time
+                    example: '2024-05-08T12:34:56.789789+00:00'
+                    nullable: true
 
-    AddressValidationResponse:
-      description: Translated reply from USPS Address Validation Service
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/SuccessfulResponse"
-              - properties:
-                  data:
-                    $ref: "#/components/schemas/AddressValidationResponseData"
-          example:
-            statusCode: 200
-            message: ""
-            data:
-              matches: true
-              supplied:
-                $ref: "#/components/examples/exampleAddress"
-              suggested:
-                $ref: "#/components/examples/exampleAddress"
-            warnings: []
+        ExistingPassport:
+            type: object
+            properties:
+                nameAsPrinted:
+                    type: string
+                    example: 'Ringo Beatle Starr'
+                bookNumber:
+                    type: string
+                    nullable: true
+                bookIssueDate:
+                    type: string
+                    format: date
+                    nullable: true
+                # any way to make this only nullable if book* is non-null? could nest and do oneOf: i guess
+                cardNumber:
+                    type: string
+                    nullable: true
+                cardIssueDate:
+                    type: string
+                    format: date
+                    nullable: true
 
-    RenewalApplicationResponse:
-      description: Newly-created OPR application w/ some masked sensitive fields
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/SuccessfulResponse"
-              - properties:
-                  data:
-                    $ref: "#/components/schemas/RenewalApplicationResponseData"
-          example:
-            statusCode: 200
-            message: ""
-            data:
-              application:
-                id: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-                applicationType: "renewal"
-                applicant:
-                  first: "Ringo"
-                  middle: "Beatle"
-                  last: "Starr"
-                  dob: "1970-07-07"
-                  gender: "m"
-                  placeOfBirth: "England"
-                  primaryAddress:
-                    $ref: "#/components/examples/exampleAddress"
-                  alternateNames: []
-                phone:
-                  phoneNumber: "***-***-1234"
-                heightFt: 5
-                heightIn: 11
-                occupation: "Rock Star"
-              status:
-                applicationId: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-                currentStatus: "in_progress"
-                datetimeStarted: "2024-05-08T12:34:56.789789+00:00"
-            warnings: []
+        MaskedPhone:
+            type: object
+            properties:
+                intCode:
+                    type: string
+                    example: '1'
+                    pattern: '^[0-9]{1,3}'
+                    nullable: true
+                phoneNumber:
+                    $ref: '#/components/schemas/MaskedPhoneNumber'
+                    nullable: true
+                phoneType:
+                    type: string
+                    enum:
+                        - home
+                        - work
+                        - cell
+                        - other
+                    nullable: true
+                isPrimary:
+                    type: boolean
+                    example: true
 
-    PersistPhotoResponse:
-      description: Photo errors if rejected by external Photo Quality Service OR metadata about persisted photo
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/SuccessfulResponse"
-              - properties:
-                  data:
-                    $ref: "#/components/schemas/PersistPhotoResponseData"
-          example:
-            statusCode: 200
-            message: ""
-            data:
-              applicationId: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-              datetimeUploaded: "2024-05-08T12:34:56.789789+00:00"
-              storageId: "abc-123-efg"
-              status:
-                isValid: true
-            warnings: []
-
-    PaymentProcessedResponse:
-      description: Payment processing info w/ data specific to payment processors
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/SuccessfulResponse"
-              - properties:
-                  data:
-                    $ref: "#/components/schemas/PaymentProcessedResponseData"
-          example:
-            statusCode: 200
-            message: ""
-            data:
-              applicationId: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-              datetimeProcessed: "2024-05-08T12:34:56.789789+00:00"
-              processor: "paygov"
-            warnings: []
-
-    BadRequest:
-      description: There was a problem with your request
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
-
-  #
-  # SCHEMAS
-  #
-  schemas:
-    SuccessfulResponse:
-      type: object
-      properties:
-        statusCode:
-          type: integer
-          example: 200
-        message:
-          type: string
-          example: "Success"
-        meta:
-          $ref: "#/components/schemas/Meta"
-        data:
-          oneOf:
-            - type: array
-            - type: object
-          example: []
-        warnings:
-          type: array
-          items:
-            $ref: "#/components/schemas/ValidationErrorDetail"
-          example: []
-      required: ["statusCode"]
-      additionalProperties: false
-
-    ErrorResponse:
-      type: object
-      properties:
-        status_code:
-          type: integer
-        message:
-          type: string
-        meta:
-          $ref: "#/components/schemas/Meta"
-        data:
-          oneOf:
-            - type: array
-            - type: object
-          example: []
-        warnings:
-          type: array
-          items:
-            $ref: "#/components/schemas/ValidationErrorDetail"
-        errors:
-          type: array
-          items:
-            $ref: "#/components/schemas/ValidationErrorDetail"
-      required: ["statusCode", "errors"]
-      additionalProperties: false
-
-    Meta:
-      type: object
-      properties:
-        resource:
-          type: string
-          example: "/v1"
-        method:
-          type: string
-          example: "GET"
-        query:
-          type: object
-          nullable: true
-        paging:
-          type: object
-          nullable: true
-          properties:
-            pageOffset:
-              type: integer
-            pageSize:
-              type: integer
-            totalRecords:
-              type: integer
-            totalPages:
-              type: integer
-            orderBy:
-              type: string
-            orderDirection:
-              type: string
-      required: ["method", "resource"]
-      additionalProperties: false
-
-    Address:
-      type: object
-      properties:
-        address1:
-          type: string
-          example: "123 Main St"
-        address2:
-          type: string
-          example: "Apt 1"
-        city:
-          type: string
-          example: "Richmond"
-        state:
-          type: string
-          example: "VA"
-          enum:
-            - MD
-            - VA
-            - DC
-            # TODO: fill in states
-        zip:
-          type: string
-          example: "00000"
-        country:
-          type: string
-          example: "US"
-          enum:
-            - US
-            - at_sea # TODO: find TGIS codes for this
-            - in_flight # TODO: find TGIS codes for this
-
-    Applicant:
-      type: object
-      properties:
-        # TBD do we need to expose this?
-        # id:
-        #   type: string
-        #   format: uuid
-        #   example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-        #   nullable: true
-        first:
-          type: string
-          example: "Ringo"
-        middle:
-          type: string
-          example: "Beatle"
-        last:
-          type: string
-          example: "Starr"
-        dob:
-          type: string
-          format: date
-          example: "2004-08-08"
-        gender:
-          type: string
-          enum:
-            - m
-            - f
-            - x # TBD - there's currently an ask to add nonbinary values
-        placeOfBirth:
-          type: string
-          example: "England"
-          # TBD There are some contraints for the formatting depending on some characteristics (domestic, foreign, etc. dependent on TDIS)
-        ssn:
-          $ref: "#/components/schemas/MaskedSsn"
-          nullable: true
-        primaryAddress:
-          $ref: "#/components/schemas/Address"
-          description: A current mailing address
-        permanentAddress:
-          $ref: "#/components/schemas/Address"
-          description: The address that will be printed on official documents
-        alternateNames:
-          type: array # TBD maybe ok to just store as delimited string
-          example: []
-          items:
+        MaskedPhoneNumber:
             type: string
-        hairColor:
-          type: string
-          example: "Brown"
-          nullable: true
-        eyeColor:
-          type: string
-          example: "Blue"
-          nullable: true
+            example: '***-***-1234'
+            pattern: '^\*{3}\-\*{3}\-[0-9]{4}$'
 
-    ApplicationStatus:
-      type: object
-      properties:
-        applicationId:
-          type: string
-          format: uuid
-          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-        currentStatus:
-          type: string
-          example: "in_progress"
-          enum:
-            - in_progress # don't need this until we save user's place
-            - submitted
-            - pending_payment_received # TBD if we need this waiting for treasury
-            - approved
-            - rejected
-            # values TBD
-        datetimeStarted:
-          type: string
-          format: date-time
-          example: "2024-05-08T12:34:56.789789+00:00"
-        datetimeSubmitted:
-          type: string
-          format: date-time
-          example: "2024-05-08T12:34:56.789789+00:00"
-          nullable: true
-        datetimeCompleted:
-          type: string
-          format: date-time
-          example: "2024-05-08T12:34:56.789789+00:00"
-          nullable: true
+        MaskedSsn:
+            type: string
+            example: '***-**-1234'
+            pattern: '^\*{3}-\*{2}-\d{4}$'
 
-    ExistingPassport:
-      type: object
-      properties:
-        nameAsPrinted:
-          type: string
-          example: "Ringo Beatle Starr"
-        bookNumber:
-          type: string
-          nullable: true
-        bookIssueDate:
-          type: string
-          format: date
-          nullable: true
-        # any way to make this only nullable if book* is non-null? could nest and do oneOf: i guess
-        cardNumber:
-          type: string
-          nullable: true
-        cardIssueDate:
-          type: string
-          format: date
-          nullable: true
+        PhotoQualityStatus:
+            type: object
+            properties:
+                isValid:
+                    type: boolean
+                    example: true
+                # errors: TBD what PQS returns and if we translate for response
 
-    MaskedPhone:
-      type: object
-      properties:
-        intCode:
-          type: string
-          example: "1"
-          pattern: "^[0-9]{1,3}"
-          nullable: true
-        phoneNumber:
-          $ref: "#/components/schemas/MaskedPhoneNumber"
-          nullable: true
-        phoneType:
-          type: string
-          enum:
-            - home
-            - work
-            - cell
-            - other
-          nullable: true
-        isPrimary:
-          type: boolean
-          example: true
+        RenewalApplication:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    example: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                applicationType:
+                    type: string
+                    example: 'renewal'
+                    enum:
+                        - renewal # TBD other app types, may
+                applicant:
+                    $ref: '#/components/schemas/Applicant'
+                email:
+                    type: string
+                    format: email
+                    example: 'a.b.c@email.com'
+                    nullable: true
+                    minLength: 3
+                phone:
+                    $ref: '#/components/schemas/MaskedPhone'
+                # TBD combine into another table - current thinking is these values can change and could be attached ot this application "snapshot"
+                heightFt:
+                    type: number
+                    example: 5
+                heightIn:
+                    type: number
+                    example: 11
+                occupation:
+                    type: string
+                    example: 'Rock Star'
+                employerOrSchool:
+                    type: string
+                    example: 'St Silas'
+                # TBD eSignature data
 
-    MaskedPhoneNumber:
-      type: string
-      example: "***-***-1234"
-      pattern: '^\*{3}\-\*{3}\-[0-9]{4}$'
+        ValidationErrorDetail:
+            type: object
+            properties:
+                errorType:
+                    type: string
+                    example: 'required'
+                message:
+                    example: 'applicant.dob is required.'
+                    description: 'Somewhat user-friendly description of the error. May contain PII.'
+                    type: string
+                rule:
+                    description: >
+                        Usage varies depending on the source of the validation error. OpenAPI validation
+                        errors will set this to the expected value behavior (i.e the max length, or pattern).
+                    oneOf:
+                        - type: string
+                        - type: number
+                        - type: integer
+                        - type: boolean
+                        - type: array
+                        - type: object
+                    example: []
+                field:
+                    description: 'Field path, when the error is associated with a specific field.'
+                    example: 'applicant.dob'
+                    nullable: true
+                    type: string
+            additionalProperties: false
 
-    MaskedSsn:
-      type: string
-      example: "***-**-1234"
-      pattern: '^\*{3}-\*{2}-\d{4}$'
+        EligibilityCheckResponseData:
+            type: object
+            properties:
+                isEligible:
+                    type: boolean
+                    example: true
+            example:
+                isEligible: true
+                # errors: TBD
 
-    PhotoQualityStatus:
-      type: object
-      properties:
-        isValid:
-          type: boolean
-          example: true
-        # errors: TBD what PQS returns and if we translate for response
+        AddressValidationResponseData:
+            type: object
+            properties:
+                matches:
+                    type: boolean
+                    description: True if the suggested address matches the supplied address
+                supplied:
+                    type: object
+                    $ref: '#/components/schemas/Address'
+                suggested:
+                    type: object
+                    $ref: '#/components/schemas/Address'
+                    nullable: true
+                # TBD USPS response props
 
-    RenewalApplication:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-        applicationType:
-          type: string
-          example: "renewal"
-          enum:
-            - renewal # TBD other app types, may
-        applicant:
-          $ref: "#/components/schemas/Applicant"
-        email:
-          type: string
-          format: email
-          example: "a.b.c@email.com"
-          nullable: true
-          minLength: 3
-        phone:
-          $ref: "#/components/schemas/MaskedPhone"
-        # TBD combine into another table - current thinking is these values can change and could be attached ot this application "snapshot"
-        heightFt:
-          type: number
-          example: 5
-        heightIn:
-          type: number
-          example: 11
-        occupation:
-          type: string
-          example: "Rock Star"
-        employerOrSchool:
-          type: string
-          example: "St Silas"
-        # TBD eSignature data
+        RenewalApplicationResponseData:
+            type: object
+            properties:
+                application:
+                    $ref: '#/components/schemas/RenewalApplication'
+                status:
+                    $ref: '#/components/schemas/ApplicationStatus'
 
-    ValidationErrorDetail:
-      type: object
-      properties:
-        errorType:
-          type: string
-          example: "required"
-        message:
-          example: "applicant.dob is required."
-          description: "Somewhat user-friendly description of the error. May contain PII."
-          type: string
-        rule:
-          description: >
-            Usage varies depending on the source of the validation error. OpenAPI validation
-            errors will set this to the expected value behavior (i.e the max length, or pattern).
-          oneOf:
-            - type: string
-            - type: number
-            - type: integer
-            - type: boolean
-            - type: array
-            - type: object
-          example: []
-        field:
-          description: "Field path, when the error is associated with a specific field."
-          example: "applicant.dob"
-          nullable: true
-          type: string
-      additionalProperties: false
+        PersistPhotoResponseData:
+            type: object
+            properties:
+                applicationId:
+                    type: string
+                    format: uuid
+                    example: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                datetimeUploaded:
+                    type: string
+                    format: date-time
+                    example: '2024-05-08T12:34:56.789789+00:00'
+                storageId:
+                    type: string
+                    example: 'abc-123-efg'
+                    # possibly some S3 key that can be used to generate temporary URL
+                status:
+                    $ref: '#/components/schemas/PhotoQualityStatus'
 
-    EligibilityCheckResponseData:
-      type: object
-      properties:
-        isEligible:
-          type: boolean
-          example: true
-      example:
-        isEligible: true
-        # errors: TBD
+        PaymentProcessedResponseData:
+            type: object
+            properties:
+                applicationId:
+                    type: string
+                    format: uuid
+                    example: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                datetimeProcessed:
+                    type: string
+                    format: date-time
+                    example: '2024-05-08T12:34:56.789789+00:00'
+                processor:
+                    type: string
+                    example: 'paygov'
+                    enum:
+                        - paygov
+                        # other processors TBD
+                # TBD other props returned by payment methods
 
-    AddressValidationResponseData:
-      type: object
-      properties:
-        matches:
-          type: boolean
-          description: True if the suggested address matches the supplied address
-        supplied:
-          type: object
-          $ref: "#/components/schemas/Address"
-        suggested:
-          type: object
-          $ref: "#/components/schemas/Address"
-          nullable: true
-        # TBD USPS response props
+        PersistPhotoRequest:
+            type: object
+            properties:
+                photo1:
+                    type: string # TODO: change to multipart etc.
+                    example: '123'
+                photo2: # TODO: Doublecheck photo 2/3 aren't necessary for digital
+                    type: string
+                    example: '123'
+                photo3:
+                    type: string
+                    example: '123'
 
-    RenewalApplicationResponseData:
-      type: object
-      properties:
-        application:
-          $ref: "#/components/schemas/RenewalApplication"
-        status:
-          $ref: "#/components/schemas/ApplicationStatus"
+        EligibilityCheckRequest:
+            type: object
+            properties:
+                dateExpires: # whatever the eligibility criteria are
+                    type: string
+                    example: '2024-05-08'
+                    format: date
 
-    PersistPhotoResponseData:
-      type: object
-      properties:
-        applicationId:
-          type: string
-          format: uuid
-          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-        datetimeUploaded:
-          type: string
-          format: date-time
-          example: "2024-05-08T12:34:56.789789+00:00"
-        storageId:
-          type: string
-          example: "abc-123-efg"
-          # possibly some S3 key that can be used to generate temporary URL
-        status:
-          $ref: "#/components/schemas/PhotoQualityStatus"
+        PaymentProcessedRequest:
+            type: object
+            properties:
+                caseId:
+                    type: string
+                    format: uuid
+                    example: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                casePersonId:
+                    type: string
+                    format: uuid
+                    example: '6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369'
+                eirlIndicator:
+                    type: string
+                    example: 'eirl'
 
-    PaymentProcessedResponseData:
-      type: object
-      properties:
-        applicationId:
-          type: string
-          format: uuid
-          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-        datetimeProcessed:
-          type: string
-          format: date-time
-          example: "2024-05-08T12:34:56.789789+00:00"
-        processor:
-          type: string
-          example: "paygov"
-          enum:
-            - paygov
-            # other processors TBD
-        # TBD other props returned by payment methods
+    requestBodies:
+        AddressValidationRequest:
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Address'
 
-    PersistPhotoRequest:
-      type: object
-      properties:
-        photo1:
-          type: string # TODO: change to multipart etc.
-          example: "123"
-        photo2: # TODO: Doublecheck photo 2/3 aren't necessary for digital
-          type: string
-          example: "123"
-        photo3:
-          type: string
-          example: "123"
+        RenewalApplicationCreateRequest:
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/RenewalApplication'
 
-    EligibilityCheckRequest:
-      type: object
-      properties:
-        dateExpires: # whatever the eligibility criteria are
-          type: string
-          example: "2024-05-08"
-          format: date
+        PersistPhotoRequest:
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/PersistPhotoRequest'
 
-    PaymentProcessedRequest:
-      type: object
-      properties:
-        caseId:
-          type: string
-          format: uuid
-          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-        casePersonId:
-          type: string
-          format: uuid
-          example: "6ddcf443-d1bf-4acd-83cc-b1f2d0dc2369"
-        eirlIndicator:
-          type: string
-          example: "eirl"
+        EligibilityCheckRequest:
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/EligibilityCheckRequest'
 
-  requestBodies:
-    AddressValidationRequest:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Address"
+        PaymentProcessedRequest:
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/PaymentProcessedRequest'
 
-    RenewalApplicationCreateRequest:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/RenewalApplication"
-
-    PersistPhotoRequest:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/PersistPhotoRequest"
-
-    EligibilityCheckRequest:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/EligibilityCheckRequest"
-
-    PaymentProcessedRequest:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/PaymentProcessedRequest"
-
-  examples:
-    exampleAddress:
-      value:
-        address1: "123 Main St"
-        address2: "Apt 1"
-        city: "Richmond"
-        state: "VA"
-        zip: "00000"
-        country: "US"
+    examples:
+        exampleAddress:
+            value:
+                address1: '123 Main St'
+                address2: 'Apt 1'
+                city: 'Richmond'
+                state: 'VA'
+                zip: '00000'
+                country: 'US'

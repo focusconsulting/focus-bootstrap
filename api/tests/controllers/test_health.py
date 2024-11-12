@@ -16,7 +16,7 @@ class TestHealth:
         assert data == {
             "status": "up",
             "timestamp": now.isoformat(),
-            "apiName": "opr-api",
+            "apiName": "api",
             "apiVersion": "v1",
         }
 
@@ -29,7 +29,7 @@ class TestHealth:
         assert data == {
             "status": "up",
             "timestamp": now.isoformat(),
-            "apiName": "opr-api",
+            "apiName": "api",
             "apiVersion": "v1",
             "components": {"db": {"status": "up"}},
         }

@@ -1,4 +1,4 @@
-# OPR Client
+# Client
 
 ## Developer Setup
 

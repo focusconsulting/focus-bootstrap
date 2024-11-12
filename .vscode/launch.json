@@ -5,16 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug OPR API",
+      "name": "Debug API",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/api/opr_api/__main__.py",
+      "program": "${workspaceFolder}/api/focus_api/__main__.py",
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}/api",
       "justMyCode": false,
       "env": {
         "PYTHONPATH": "${workspaceFolder}/api",
-        "POSTGRES_CONNECTION_STRING": "postgresql+psycopg2://opr:secret123@localhost:5432/opr"
+        "POSTGRES_CONNECTION_STRING": "postgresql+psycopg2://focus:secret123@localhost:5432/focus"
       }
     }
   ]

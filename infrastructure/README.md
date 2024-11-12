@@ -1,4 +1,4 @@
-# OPR Infrastructure
+# Infrastructure
 
 ## Developer Setup
 

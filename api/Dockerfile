@@ -27,7 +27,7 @@ USER appuser
 RUN poetry config virtualenvs.in-project true \
     && poetry install --no-interaction --no-ansi --no-root
 
-CMD ["poetry", "run", "uvicorn", "opr_api.__main__:app", "--reload", "--host=0.0.0.0"]
+CMD ["poetry", "run", "uvicorn", "focus_api.__main__:app", "--reload", "--host=0.0.0.0"]
 
 
 # Non-dev build
@@ -58,4 +58,4 @@ COPY --chown=python:python . .
 USER 999
 
 ENV PATH="/app/.venv/bin:$PATH"
-CMD [ "gunicorn", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "opr_api.__main__:app" ]
+CMD [ "gunicorn", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "focus_api.__main__:app" ]

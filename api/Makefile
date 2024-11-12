@@ -37,14 +37,14 @@ define run_tests
 	$(PY_RUN_CMD) pytest $(1)
 endef
 
-start-api-dev: ## Run the OPR API with reloading enabled
-	$(PY_RUN_CMD) uvicorn opr_api.__main__:app --reload
+start-api-dev: ## Run the API with reloading enabled
+	$(PY_RUN_CMD) uvicorn focus_api.__main__:app --reload
 
 test: ## Run tests, set $args to pass flags to `pytest`
 	$(call run_tests, $(args))
 
 test-coverage: ## Run tests run
-	$(PY_RUN_CMD) coverage run --branch --source=opr_api -m pytest $(XDIST) $(args)
+	$(PY_RUN_CMD) coverage run --branch --source=focus_api -m pytest $(XDIST) $(args)
 	$(PY_RUN_CMD) coverage report
 
 test-coverage-report: ## Open HTML test coverage report
@@ -56,8 +56,8 @@ lint-changed: FILES := $(shell [ "$(GIT_REPO_AVAILABLE)" = "true" ] && { \
 	git diff --diff-filter=d --name-only --relative HEAD~$(max); \
 	git diff --diff-filter=d --name-only --staged --relative HEAD~$(max); \
 	git ls-files --other --exclude-standard HEAD~$(max);} | \
-	grep -E '^(opr_api|tests|bin)/.*\.py' | sort -u)
-lint-changed: FILES_MYPY := $(shell echo $(FILES) | tr " " "\n" | grep -E '^(opr_api|bin)/')
+	grep -E '^(focus_api|tests|bin)/.*\.py' | sort -u)
+lint-changed: FILES_MYPY := $(shell echo $(FILES) | tr " " "\n" | grep -E '^(focus_api|bin)/')
 lint-changed: ## Lint changed files, $max var determines number of commits to compare
 	$(PY_RUN_CMD) flake8 --format=$(FLAKE8_FORMAT) $(FILES)
 	$(PY_RUN_CMD) mypy $(MYPY_FLAGS) $(FILES_MYPY) $(MYPY_POSTPROC)
@@ -66,10 +66,10 @@ lint-py: ## Run python linting
 lint-py: lint-flake lint-mypy
 
 lint-flake: ## Run flake8
-	$(PY_RUN_CMD) flake8 --format=$(FLAKE8_FORMAT) opr_api
+	$(PY_RUN_CMD) flake8 --format=$(FLAKE8_FORMAT) focus_api
 
 lint-mypy: ## Run mypy
-	$(PY_RUN_CMD) mypy --show-error-codes $(MYPY_FLAGS) opr_api $(MYPY_POSTPROC)
+	$(PY_RUN_CMD) mypy --show-error-codes $(MYPY_FLAGS) focus_api $(MYPY_POSTPROC)
 
 lint-spectral: ## Run OpenAPI Spec linting
 	docker run --rm --tty --cap-drop=ALL --network=none --read-only --volume=$(PWD):/tmp:ro \

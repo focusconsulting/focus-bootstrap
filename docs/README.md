@@ -1,3 +1,3 @@
-# OPR Documentation
+# Documentation
 
 ## Table of contents
